@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  GetAllUsersApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: get-all-users-api
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        AllowOrigin: "'*'"
+
+  GetAllUsersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: get-all-cognito-users
+      Handler: getUsers.handler
+      Runtime: nodejs18.x
+      CodeUri: .
+      Environment:
+        Variables:
+          USER_POOL_ID: ap-south-1_qmPd7G9Xm
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action:
+              - cognito-idp:ListUsers
+            Resource: "*"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref GetAllUsersApi
+            Path: /users
+            Method: GET
+
+  UpdateUserProfileApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: update-user-profile-api
+      StageName: prod
+      Cors:
+        AllowMethods: "'POST,OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        AllowOrigin: "'*'"
+
+  UpdateUserProfileFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: update-user-profile
+      Handler: updateUser.handler
+      Runtime: nodejs18.x
+      CodeUri: .
+      Environment:
+        Variables:
+          USER_POOL_ID: ap-south-1_qmPd7G9Xm
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action:
+              - cognito-idp:AdminUpdateUserAttributes
+            Resource: "*"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref UpdateUserProfileApi
+            Path: /update-user
+            Method: POST
