@@ -1,6 +1,7 @@
 const {
     CognitoIdentityProviderClient,
-    AdminUpdateUserAttributesCommand
+    AdminUpdateUserAttributesCommand,
+    AdminSetUserPasswordCommand
 } = require("@aws-sdk/client-cognito-identity-provider");
 
 const client = new CognitoIdentityProviderClient();
@@ -22,7 +23,7 @@ exports.handler = async (event) => {
 
     try {
         const body = JSON.parse(event.body || "{}");
-        const { username, firstName, lastName, title, role, email } = body;
+        const { username, firstName, lastName, title, role, email, password } = body;
 
         if (!username) {
             return {
@@ -40,13 +41,25 @@ exports.handler = async (event) => {
         if (title) attributes.push({ Name: "custom:title", Value: title });
         if (role) attributes.push({ Name: "custom:role", Value: role });
 
-        const command = new AdminUpdateUserAttributesCommand({
-            UserPoolId: process.env.USER_POOL_ID,
-            Username: username,
-            UserAttributes: attributes,
-        });
+        if (attributes.length > 0) {
+            const updateAttrsCommand = new AdminUpdateUserAttributesCommand({
+                UserPoolId: process.env.USER_POOL_ID,
+                Username: username,
+                UserAttributes: attributes,
+            });
+            await client.send(updateAttrsCommand);
+        }
 
-        await client.send(command);
+        // Update password if provided
+        if (password) {
+            const setPasswordCommand = new AdminSetUserPasswordCommand({
+                UserPoolId: process.env.USER_POOL_ID,
+                Username: username,
+                Password: password,
+                Permanent: true // set to true to make password permanent without reset
+            });
+            await client.send(setPasswordCommand);
+        }
 
         return {
             statusCode: 200,
