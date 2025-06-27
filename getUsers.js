@@ -35,7 +35,11 @@ exports.handler = async (event) => {
             });
             return {
                 username: user.Username,
-                attributes,
+                firstName: attrs["given_name"] || "",
+                lastName: attrs["family_name"] || "",
+                email: attrs["email"] || "",
+                title: attrs["custom:title"] || "",
+                role: attrs["custom:role"] || ""
             };
         });
 
