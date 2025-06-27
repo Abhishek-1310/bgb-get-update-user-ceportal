@@ -61,6 +61,7 @@ Resources:
             Effect: Allow
             Action:
               - cognito-idp:AdminUpdateUserAttributes
+              - cognito-idp:AdminSetUserPassword   # <-- added this permission
             Resource: "*"
       Events:
         ApiEvent:
