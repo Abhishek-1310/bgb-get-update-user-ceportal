@@ -56,7 +56,7 @@ exports.handler = async (event) => {
                 UserPoolId: process.env.USER_POOL_ID,
                 Username: username,
                 Password: password,
-                Permanent: true // set to true to make password permanent without reset
+                Permanent: true
             });
             await client.send(setPasswordCommand);
         }
