@@ -7,6 +7,14 @@ Resources:
     Properties:
       Name: get-all-users-api
       StageName: prod
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        AddDefaultAuthorizerToCorsPreflight: false
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: arn:aws:cognito-idp:ap-south-1:730335550462:userpool/ap-south-1_qmPd7G9Xm
+            Identity:
+              ReauthorizeEvery: 0
       Cors:
         AllowMethods: "'GET,OPTIONS'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
@@ -41,6 +49,14 @@ Resources:
     Properties:
       Name: update-user-profile-api
       StageName: prod
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        AddDefaultAuthorizerToCorsPreflight: false
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: arn:aws:cognito-idp:ap-south-1:730335550462:userpool/ap-south-1_qmPd7G9Xm
+            Identity:
+              ReauthorizeEvery: 0
       Cors:
         AllowMethods: "'POST,OPTIONS'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
